@@ -44,3 +44,21 @@ addopts = ['-p', 'no:warnings', '--cov=fast_zero', '--cov-context=test']
 
 [tool.typos.files]
 extend-exclude = ["*.md", "migrations"]
+[tool.poe]
+poetry_command = ""
+
+[tool.poe.tasks]
+lint = "ruff check"
+
+format.sequence = [
+    { cmd = "ruff check --fix" },
+    { cmd = "ruff format" },
+]
+
+serve = "fastapi dev fast_zero/app.py"
+
+test.sequence = [
+    "lint",
+    { cmd = "pytest -s -x -vv $POE_EXTRA_ARGS" },
+    { cmd = "coverage html --show-contexts" },
+]
